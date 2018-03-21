@@ -1,0 +1,24 @@
+1.通过权重分配迭代给每一个销售代表分配客户：
+    具体实现实现流程
+    首先取得所有的销售代表的对象，按权重从大到小排列
+while 循环，count=0,里层再进行for循环，在for循环中比较count与客户数的大小，
+如果count小于客户数，将这个销售的id添加到列表中，每进行一次for循环，count就加一，
+如果没有客户数大于count，就结束外层的while循环。
+
+2.创建一个自动给销售分配客户的类，在这个类中，
+
+(1)四个静态字段
+有users=None,iter_users=None,rollback_list=[],reset_status=False，
+(2)类方法：
+def fetch_user(cls): 获取按权重分配的销售ID的列表，并赋值给静态users
+def get_sale_id(cls):迭代iter_users,返回一个个销售id，如果iter_users没有值，就迭代users，
+如果users也没有值，则调用fetch_user方法。
+注意：异常处理：再循环一次 cls.iter_users=next(cls.users)
+
+(3)后端取到数据
+数据库客户表和客户分配表，这两张表是一个事物，添加数据
+
+3.实现代码发送邮件，微信，和短信。(微信公众号推送)
+借鉴Django源码，在settings中写上调用文件的路径和类名，
+    单例模式
+

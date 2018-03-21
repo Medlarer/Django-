@@ -1,0 +1,56 @@
+内容回顾
+1.路由系统：
+    v => ([],None,None)
+2.model.UserInfo
+    app_name=model.UserInfo._meta.app_label
+    model_name=model.UserInfo._meta.app_label
+    verbose_name=model.UserInfo._meta.get_field("字段名").verbose_name
+    注：如果没有verbose_name，会自动取字段名
+3.两个类
+    StarkConfig，用于为每一个类生成URL对应关系，并编写视图函数处理用户请求
+        [
+            (^$ -> self.list_view),
+            (^add/$ -> self.add_view),
+            (^edit/$ -> self.edit_view),
+            (^delete/$ -> self.delete_view),
+        ]
+    StarkSite
+        一个容器，用于放置处理请求对应关系
+        {
+            model.UserInfo:UserInfoConfig(model.UserInfo,self)
+            model.UserType:StarkConfig(model.UserType,self)
+        }
+    问题：代码修改一下，实现每一个类在增删改查之外，再扩展自己的URL
+        实现一：重写get_urls
+            def get_urls(self):
+                app_model_name=(self.model_class._meta.app_label,self.model_class._meta.model_name)
+                url_patterns=[
+                    url(r"^$", self.list_view,name="%s_%s_list" %(app_model_name)),
+                    url(r"^add/$", self.add_view,name="%s_%s_add" %(app_model_name)),
+                    url(r"^(\d+)/edit/$", self.edit_view,name="%s_%s_edit" %(app_model_name)),
+                    url(r"^(\d+)/delete/$", self.delete_view,name="%s_%s_delete" %(app_model_name)),
+                ]
+                url_patterns.extend(self.extra_url())
+                return url_patterns
+4.函数和方法
+    class Foo(object):
+        def __init__(self):
+            self.name="alex"
+        def func(self):
+            print(self.name)
+    from types import FunctionType,MethodType
+    obj=Foo()
+    print(isinstance(obj.func,FunctionType)) False
+    print(isinstance(obj.func,MethodType))   True
+
+    print(isinstance(Foo.func,FunctionType)) True
+    print(isinstance(Foo.func,MethodType))   False
+    注意：
+        方法：无需传入self参数
+        函数：必须手动传入self参数
+
+    namespace
+        reverse("namespace:name") 反向生成url
+
+
+

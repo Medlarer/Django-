@@ -1,0 +1,40 @@
+今日内容概要
+1.在前端的添加页面，将外键字段或多对多字段固定在input输入框后面
+2.设置edit_link全局字段,去掉编辑标签，将编辑标签改为点击数据的某一字段跳转页面
+3.添加额外url，根据需要，自己定制额外url（extra_url）
+4.重写列表页面的视图函数
+5.组合搜索，根据需要显示组合搜索的条件
+6.当外键字段关联其他表的字段不是pk时，需要将查找方法改为关联字段进行查找。
+补充：
+在django中查看sql语句的方法
+法I：
+
+>>> from core.models import Province
+>>> print Province.objects.all().query
+SELECT `core_province`.`id`, `core_province`.`name`, `core_province`.`code` FROM `core_province`
+该方法只能查看select语句，对于其他更新保存的语句不能查看，会报错。
+
+复制代码
+>>> from core.models import Province
+>>> p = Province(name=u'广州', code='020')
+>>> p.save().query
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'NoneType' object has no attribute 'query'
+>>> p.save()
+复制代码
+也就是说只有 Queryset 有query方法。
+
+法II：
+
+复制代码
+>>> from core.models import Province
+>>> from django.db import connection
+>>> p = Province(name=u'河南', code='0371')
+>>> p.save()
+>>> print connection.queries
+[{u'time': u'0.439', u'sql': u"INSERT INTO `core_province` (`name`, `code`) VALUES ('\u5e7f\u5dde', 20)"},
+ {u'time': u'0.056', u'sql': u"UPDATE `core_province` SET `name` = '\u5e7f\u5dde', `code` = 20 WHERE `core_province`.`id` = 3 "},
+ {u'time': u'0.102', u'sql': u"INSERT INTO `core_province` (`name`, `code`) VALUES ('\u6cb3\u5357', 371)"}]
+复制代码
+该方法会打印出所有执行过的sql语句，包括我在实验方法I时所执行的两个p.save()（第一个save()为INSERT，第二个save()为UPDATE）也都打印出来了。

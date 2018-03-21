@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/form.css">
+    <title>Title</title>
+</head>
+<body>
+<div class="contianer">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+        <h2 style="text-align: center">添加客户信息</h2>
+        <form method="post" novalidate class="form-horizontal">
+
+        {% csrf_token %}
+        {% for field_name in form %}
+        <div class="form-group" style="margin-bottom: 25px">
+            <label for="" class="col-sm-4 control-label">{{ field_name.field.label }}</label>
+            <div class="col-sm-8" style="position:relative">
+                {{ field_name }}
+
+            <div style="position: absolute;font-size: 14px;background-color: #e0e0e0;color: red;left:15px;right: 15px">
+                {{ field_name.errors.0 }}</div>
+            </div>
+        </div>
+    {% endfor %}
+    <input type="submit" value="提交" class="btn btn-primary pull-right">
+</form>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

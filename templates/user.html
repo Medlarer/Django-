@@ -1,0 +1,30 @@
+{% extends "stark/base.html" %}
+
+{% block body %}
+<h2>自己的客户</h2>
+<div>
+    <table class="table-bordered table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>联系方式</th>
+            <th>状态</th>
+            <th>更多</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.customer.name }}</td>
+            <td>{{ customer.customer.qq }}</td>
+            <td>{{ customer.status }}</td>
+            <td>{{ customer.memo }}</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}

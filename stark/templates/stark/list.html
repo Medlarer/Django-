@@ -1,0 +1,95 @@
+{#{% load staticfiles %}#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <style>
+        .word{
+            text-align: center;
+        }
+         .list-filter a{
+            display: inline-block;
+            padding: 3px 6px;
+            border: 1px solid #2e6da4;
+            margin: 3px 0;
+        }
+        .list-filter a.active{
+            background-color: #2e6da4;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h2 class="word">列表页面</h2>
+<div class="container">
+    <div class="row">
+        <div>
+            {% if cls.show_add_btn %}
+                <a href="{{ cls.add_url }}"><button class="btn btn-info">添加</button></a>
+            {% endif %}
+            <hr>
+        </div>
+        {% if cls.show_com_filter %}
+        <div class="list-filter">
+            {% for filter_row in cls.get_comb_filter  %}
+            <div>
+            {% for row in filter_row %}
+            {{ row }}
+            {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div>
+            {% if cls.show_search_form  %}
+            <form class="navbar-form " role="search" method="get" style="float: right">
+                <div class="form-group">
+                    <input type="text"  name="q"  value="{{ cls.show_search_form_val }}" class="form-control" placeholder="请输入搜索条件">
+                </div>
+                <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+            </form>
+            {% endif %}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% if cls.show_actions %}
+                <div class="form-group">
+                <select name="list_action" class="form-control" style="display:inline-block;width: 200px;">
+                    {% for item in cls.modify_actions %}
+                        <option value="{{ item.name }}">{{ item.text }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-primary">执行</button>
+            </div>
+            {% endif %}
+            <table class="table table-bordered">
+            <thead>
+            <tr>
+            {% for head in cls.head_data %}
+                <th>{{ head }}</th>
+            {% endfor %}
+            </tr>
+            </thead>
+        <tbody>
+        {% for data in cls.body_data %}
+             <tr>
+            {% for obj in data %}
+                <td>{{ obj }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+        </form>
+    <div>
+        <ul class="pagination">
+            {{ cls.page_obj.page_bootstrap_html|safe }}
+        </ul>
+    </div>
+    </div>
+</div>
+
+</body>
+</html>

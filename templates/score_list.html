@@ -1,0 +1,23 @@
+{% extends "stark/base.html" %}
+
+{% block body %}
+<h2>记录成绩</h2>
+<form method="post" novalidate class="form-control">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        {% for row in data %}
+        <tr>
+        <td>{{ row.obj.course_cord }}</td>
+        <td>{{ row.obj.student }}</td>
+        <td>{{ row.obj.get_record_display }}</td>
+        {% for field in row.form %}
+        <td>{{ field }}</td>
+        {% endfor %}
+
+        </tr>
+        {% endfor %}
+    </table>
+ <input type="submit" value="保存">
+</form>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+Django admin的执行流程
+1.运行 python manage.py,自动加载文件
+2.去所有已注册的app中找到admin.py文件，加载文件
+注意：自己写的Django.admin如stark组件：
+    stark组件下的apps.py下写上
+    def ready(self):
+        autodiscover_modules('stark')
+    则程序启动时，就会自动加载stark组件
+3.stark组件执行流程
+    stark文件下service.v1
+class StarkConfig(object):
+    def __init__(self,model_class,site):
+        self.model_class=model_class
+        self.site=site
+
+    def get_urls(self):
+        app_model_name=(self.model_class._meta.app_label,self.model_class._meta.model_name)
+        url_patterns=[
+            url(r"^$", self.list_view,name="%s_%s_list" %(app_model_name)),
+            url(r"^add/$", self.add_view,name="%s_%s_add" %(app_model_name)),
+            url(r"^(\d+)/edit/$", self.edit_view,name="%s_%s_edit" %(app_model_name)),
+            url(r"^(\d+)/delete/$", self.delete_view,name="%s_%s_delete" %(app_model_name)),
+        ]
+        return url_patterns
+    @property
+    def urls(self):
+        return self.get_urls()
+
+    def list_view(self,request,*args,**kwargs):
+        return HttpResponse("列表")
+    def add_view(self,request,*args,**kwargs):
+        return HttpResponse("添加")
+    def edit_view(self,request,nid,*args,**kwargs):
+        return HttpResponse("编辑")
+    def delete_view(self,request,nid,*args,**kwargs):
+        return HttpResponse("删除")
+
+class StarkSite(object):
+    def __init__(self):
+        self._registry={}
+
+    def register(self,model_class,stark_config_class=None):
+        if not stark_config_class:
+            stark_config_class=StarkConfig
+        self._registry[model_class]=stark_config_class(model_class,self)
+
+    def get_urls(self):
+        url_patterns =[]
+        for modle_class,stark_config_obj in self._registry.items():
+            app_name=modle_class._meta.app_label
+            modle_name=modle_class._meta.model_name
+            curd_url=url(r"^%s/%s/" %(app_name,modle_name),(stark_config_obj.urls,None,None))
+            print(curd_url)
+            url_patterns.append(curd_url)
+
+        print(url_patterns)
+        return url_patterns
+    @property
+    def urls(self):
+        return (self.get_urls(),None,'stark')
+site=StarkSite()

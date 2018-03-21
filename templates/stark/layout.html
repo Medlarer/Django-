@@ -1,0 +1,42 @@
+{% load staticfiles %}
+{% load rbac %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static "/bootstrap-3.3.7-dist/css/bootstrap.css" %}" />
+    <link rel="stylesheet" href="{% static "/css/form.css" %}" />
+    <link rel="stylesheet" href="/static/rbac/rbac.css"/>
+    <style>
+        body{
+            margin: 0;
+        }
+        .pg-header{
+            height: 48px;
+            background-color: #2e6da4;
+            color: white;
+        }
+    </style>
+    {% block css %} {% endblock %}
+</head>
+<body>
+    <div class="pg-header">
+        头部菜单
+    </div>
+    <div>
+        <div style="position: absolute;left: 0;width: 200px;top:48px;bottom:0;background-color:#e0e0e0;">
+            {% menu_html request %}
+        </div>
+        <div style="position: absolute;left: 231px;right: 0;top:48px;bottom: 0;overflow: scroll">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+    <script src="/static/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/static/rbac/rbac.js"></script>
+    {% block js %} {% endblock %}
+</body>
+</html>

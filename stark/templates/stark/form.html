@@ -1,0 +1,33 @@
+<form method="post" novalidate class="form-horizontal">
+    {% csrf_token %}
+    {% for dict in forms %}
+        <div class="form-group" style="margin-bottom: 25px">
+            <label for="" class="col-sm-4 control-label">{{ dict.field_name.field.label }}</label>
+            <div class="col-sm-8" style="position:relative">
+                {{ dict.field_name }}
+                 {% if dict.is_pop %}
+                    <div style="position:absolute;right:-5px;top:8px"><a onclick="popUp('{{ dict.url }}')">
+                        <span class="glyphicon glyphicon-plus"></span></a></div>
+                 {% endif %}
+            <div style="position: absolute;font-size: 14px;background-color: #e0e0e0;color: red;left:15px;right: 15px">
+                {{ dict.field_name.errors.0 }}</div>
+            </div>
+        </div>
+    {% endfor %}
+    <input type="submit" value="提交" class="btn btn-primary pull-right">
+</form>
+
+<script>
+    function popupCallback(dic) {
+        var op=document.createElement("option");
+        op.text=dic.text;
+        console.log(dic.text);
+        op.value=dic.obj_pk;
+        op.setAttribute("selected","selected");
+        document.getElementById(dic.tag_id).appendChild(op)
+    }
+    
+    function popUp(url) {
+         var popupPage = window.open(url, url, "status=1, height:500, width:600, toolbar=0, resizeable=0");
+    }
+</script>

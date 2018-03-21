@@ -1,0 +1,29 @@
+{% extends "stark/base.html" %}
+
+{% block body %}
+<h2>公共客户</h2>
+<div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>联系方式</th>
+            <th>抢单</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.qq }}</td>
+            <td><a href="/stark/app01/customer/{{ customer.id }}/competition/">抢单</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
